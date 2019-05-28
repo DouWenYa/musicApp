@@ -132,7 +132,6 @@ export default {
         height += list[i].clientHeight
         this.listGroupHeight.push(height)
       }
-      console.log(this.listGroupHeight)
     }
   },
   components: {

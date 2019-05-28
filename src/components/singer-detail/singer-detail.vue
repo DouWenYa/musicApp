@@ -1,18 +1,22 @@
 <template>
   <transition name="slide">
-    <div class="detail-wrap"></div>
+    <music-list :title='title'
+                :bg-image='bgImage'
+                :songs='song'></music-list>
   </transition>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import { getSingerDetail } from 'api/singer'
-import { getMusicVkey } from 'api/song'
+// import { getMusicVkey } from 'api/song'
 import { createSong } from 'common/js/song'
 import { ERR_OK } from 'api/config'
+import MusicList from 'components/music-list/music-list'
 export default {
   data () {
     return {
-      song: []
+      song: [],
+      count: 0
     }
   },
   created () {
@@ -21,7 +25,13 @@ export default {
   computed: {
     ...mapGetters([
       'singer'
-    ])
+    ]),
+    title () {
+      return this.singer.name
+    },
+    bgImage () {
+      return this.singer.avatar
+    }
   },
   methods: {
     _getSingerDetail () {
@@ -32,28 +42,43 @@ export default {
       getSingerDetail(this.singer.id).then((res) => {
         if (ERR_OK === res.code) {
           this.song = this.handleData(res.data.list)
-          console.log(res.data)
         }
       })
     },
     handleData (song) {
       let ret = []
+      // TODO ：优化歌曲播放地址获取 放在点击播放时获取
+      this.len = song.length
+      // let _this = this
       song.forEach(item => {
         let { musicData } = item
         if (musicData.songmid && musicData.albummid) {
-          getMusicVkey(musicData.songmid).then((res) => {
-            if (ERR_OK === res.code) {
-              let vkey = res.req_0.data.midurlinfo[0].purl
-              ret.push(createSong(musicData, vkey))
-            }
-          }).catch(e => {
-            console.log(e)
-          })
+          ret.push(createSong(musicData, ''))
+          // getMusicVkey(musicData.songmid).then((res) => {
+          //   if (ERR_OK === res.code) {
+          //     let vkey = res.req_0.data.midurlinfo[0].purl
+          //     ret.push(createSong(musicData, vkey))
+          //   }
+          //   _this.count++
+          //   if (_this.count === _this.len) {
+          //     console.log(ret)
+          //     return ret
+          //   }
+          // }).catch(e => {
+          //   _this.count++
+          //   console.log(e)
+          //   if (_this.count === _this.len) {
+          //     console.log(ret)
+          //     return ret
+          //   }
+          // })
         }
       })
-      console.log(ret)
       return ret
     }
+  },
+  components: {
+    MusicList
   }
 }
 </script>
