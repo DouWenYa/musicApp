@@ -67,6 +67,7 @@ export default {
     box-sizing: border-box;
     height: 64px;
     font-size: $font-size-medium;
+    padding-left: 20px;
 
     .rank {
       flex: 0 0 25px;
@@ -103,6 +104,7 @@ export default {
       flex: 1;
       line-height: 20px;
       overflow: hidden;
+      text-align: left;
 
       .name {
         no-wrap();

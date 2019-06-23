@@ -24,7 +24,7 @@
       </li>
     </ul>
     <div class="list-shortcut"
-         @touchstart='shortCutListStart'
+         @touchstart.stop.prevent='shortCutListStart'
          @touchmove.stop.prevent='shortCutListMove'
          @touchend.stop>
       <ul>
