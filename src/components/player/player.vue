@@ -71,10 +71,10 @@
             <span class="time time-r">{{format(currentSong.duration)}}</span>
           </div>
           <div class="operators">
-            <!-- <div class="icon i-left"
+            <div class="icon i-left"
                  @click="changeMode">
               <i :class="iconMode"></i>
-            </div> -->
+            </div>
             <div class="icon i-left"
                  :class="disableCls">
               <i @click="prev"
@@ -144,9 +144,10 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import animations from 'create-keyframe-animation'
 import { prefixStyle } from 'common/js/dom'
-// import ProgressBar from 'base/progress-bar/progress-bar'
-// import ProgressCircle from 'base/progress-circle/progress-circle'
+import ProgressBar from 'base/progress-bar/progress-bar'
+import ProgressCircle from 'base/progress-circle/progress-circle'
 import { playMode } from 'common/js/config'
+import { shuffle } from 'common/js/util'
 // import Lyric from 'lyric-parser'
 import Scroll from 'base/scroll/scroll'
 // import { playerMixin } from 'common/js/mixin'
@@ -184,12 +185,17 @@ export default {
     percent () {
       return this.currentTime / this.currentSong.duration
     },
+    iconMode () {
+      return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+    },
     ...mapGetters([
       'currentIndex',
       'fullScreen',
       'playing',
       'currentSong',
-      'playlist'
+      'playlist',
+      'mode',
+      'sequenceList'
     ])
   },
   created () {
@@ -330,6 +336,22 @@ export default {
         this.currentLyric.seek(currentTime * 1000)
       }
     },
+    changeMode () {
+      let mode = (this.mode + 1) % 3
+      this.setPlayMode(mode)
+      let musicList = []
+      if (mode === playMode.random) {
+        musicList = shuffle(this.sequenceList)
+      } else {
+        musicList = this.sequenceList
+      }
+      this.resetCurentPlayIndex(musicList)
+      this.setPlayList(musicList)
+    },
+    resetCurentPlayIndex (list) {
+      const index = list.findIndex(item => item.id === this.currentSong.id)
+      this.setCurrentIndex(index)
+    },
     getLyric () {
       this.currentSong.getLyric().then((lyric) => {
         if (this.currentSong.lyric !== lyric) {
@@ -444,7 +466,9 @@ export default {
     ...mapMutations({
       setFullScreen: 'SET_FULL_SCREEN',
       setPlayingState: 'SET_PLAYING_STATE',
-      setCurrentIndex: 'SET_CURRENT_INDEX'
+      setCurrentIndex: 'SET_CURRENT_INDEX',
+      setPlayMode: 'SET_PLAY_MODE',
+      setPlayList: 'SET_PLAYLIST'
     }),
     ...mapActions([
       'savePlayHistory'
@@ -485,9 +509,9 @@ export default {
     }
   },
   components: {
-    // ProgressBar,
-    // ProgressCircle,
-    //Playlist,
+    ProgressBar,
+    ProgressCircle,
+    // Playlist,
     Scroll
   }
 }
