@@ -476,6 +476,7 @@ export default {
   },
   watch: {
     currentSong (newSong, oldSong) {
+      let _this = this
       if (!newSong.id) {
         return
       }
@@ -490,8 +491,8 @@ export default {
       }
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
-        this.$refs.audio.play()
-        this.getLyric()
+        _this.$refs.audio.play()
+        _this.getLyric()
       }, 1000)
     },
     playing (newPlaying) {
