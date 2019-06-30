@@ -257,14 +257,14 @@ export default {
         this.currentLyric.togglePlay()
       }
     },
-    end () {
+    end () { // 歌曲播放完触发
       if (this.mode === playMode.loop) {
         this.loop()
       } else {
         this.next()
       }
     },
-    loop () {
+    loop () { // 单曲播放
       this.$refs.audio.currentTime = 0
       this.$refs.audio.play()
       this.setPlayingState(true)
@@ -272,7 +272,7 @@ export default {
         this.currentLyric.seek(0)
       }
     },
-    next () {
+    next () { // 下一曲
       if (!this.songReady) {
         return
       }
@@ -291,7 +291,7 @@ export default {
       }
       this.songReady = false
     },
-    prev () {
+    prev () { // 上一曲
       if (!this.songReady) {
         return
       }
@@ -310,7 +310,7 @@ export default {
       }
       this.songReady = false
     },
-    ready () {
+    ready () { // 歌曲资源加载完毕，触发
       this.songReady = true
       this.savePlayHistory(this.currentSong)
     },

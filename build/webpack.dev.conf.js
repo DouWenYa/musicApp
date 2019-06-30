@@ -107,6 +107,31 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             console.log(e)
           })
       })
+      app.get('/api/lyric', (req, res) => {
+        const url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric.fcg'
+        axios
+          .get(url, {
+            headers: {
+              referer: 'https://c.y.qq.com/',
+              host: 'c.y.qq.com'
+            },
+            params: req.query
+          })
+          .then(response => {
+            let data = response.data
+            if (typeof data === 'string') {
+              const reg = /({\w+})/
+              let matchs = data.match(reg)
+              if (matchs) {
+                data = JSON.parse(matchs[1])
+              }
+            }
+            res.json(data)
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      })
     }
   },
   plugins: [
