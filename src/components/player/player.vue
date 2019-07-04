@@ -148,7 +148,7 @@ import ProgressBar from 'base/progress-bar/progress-bar'
 import ProgressCircle from 'base/progress-circle/progress-circle'
 import { playMode } from 'common/js/config'
 import { shuffle } from 'common/js/util'
-// import Lyric from 'lyric-parser'
+import Lyric from 'lyric-parser'
 import Scroll from 'base/scroll/scroll'
 // import { playerMixin } from 'common/js/mixin'
 // import Playlist from 'components/playlist/playlist'
@@ -356,7 +356,9 @@ export default {
       this.currentSong.getLyric().then((lyric) => {
         if (this.currentSong.lyric !== lyric) {
           return
-        } // this.currentLyric = new Lyric(lyric, this.handleLyric)
+        }
+        this.currentLyric = new Lyric(lyric, this.handleLyric)
+        console.log(this.currentLyric)
         if (this.playing) {
           this.currentLyric.play()
         }
