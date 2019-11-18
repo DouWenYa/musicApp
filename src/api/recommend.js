@@ -34,3 +34,29 @@ export function getDiscList() {
       return Promise.resolve(res.data)
     })
 }
+export function getCDinfo(disstid) {
+  const url = '/api/getCdinfo'
+  // const url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+  const params = Object.assign({}, commonParams, {
+    disstid,
+    type: 1,
+    json: 1,
+    utf8: 1,
+    onlysong: '0',
+    new_format: '1',
+    g_tk: 5381,
+    loginUin: '0',
+    hostUin: '0',
+    notice: '0',
+    platform: 'yqq.json',
+    needNewCode: '0'
+  })
+  // return jsonp(url, params, options)
+  return axios
+    .get(url, {
+      params: params
+    })
+    .then(res => {
+      return Promise.resolve(res.data)
+    })
+}

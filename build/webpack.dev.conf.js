@@ -78,13 +78,40 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         axios
           .get(url, {
             headers: {
+              referer: 'https://y.qq.com/',
+              host: 'y.qq.com',
+              Origin: ' https://y.qq.com'
+            },
+            params: req.query
+          })
+          .then(response => {
+            res.json(response.data)
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      })
+      app.get('/api/getCdinfo', (req, res) => {
+        const url =
+          'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+        axios
+          .get(url, {
+            headers: {
               referer: 'https://c.y.qq.com/',
               host: 'c.y.qq.com'
             },
             params: req.query
           })
           .then(response => {
-            res.json(response.data)
+            let data = response.data
+            if (typeof data === 'string') {
+              const reg = /^\w+\((.+})\)$/
+              let matchs = data.match(reg)
+              if (matchs) {
+                data = JSON.parse(matchs[1])
+              }
+            }
+            res.json(data)
           })
           .catch(e => {
             console.log(e)
